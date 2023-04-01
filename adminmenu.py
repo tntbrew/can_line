@@ -1,6 +1,8 @@
 import tkinter as tk
 from productionlines import ProductionLine
-
+from weldingrollchange import WeldingRollChange
+from weldingrollspecs import WeldingRollSpecifications
+from usermanager import UserManager
 
 class AdminMenu:
 
@@ -38,7 +40,7 @@ class AdminMenu:
 
         tools = tk.Menu(self.menubar)
 
-        tools.add_command(label='Add User', command=lambda: UserManager(self.master).create_new_user_form)
+        tools.add_command(label='Add User', command=lambda: UserManager(self.master).create_new_user_form())
 
         tools.add_command(label='Add City', command=None)
 
