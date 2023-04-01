@@ -100,7 +100,7 @@ class WeldingRollChange:
                                            text='Top Roll Position:')  # ,bg=BG_COLOR,font=("Arial 11 bold "))
         top_roll_position_label.grid(row=11, column=0, pady=10, sticky='e')
 
-        # Create data tk.Entry boxes for form
+        # Create data tk.Entry boxes
 
         self.line_number_combobox = ttk.Combobox(self.root)
         self.line_number_combobox['values'] = production_line
@@ -248,7 +248,7 @@ class WeldingRollChange:
             tk.messagebox.showerror('Value Error',
                                     self.top_roll_profile_depth_textbox.get() + ' is not a valid value! \n Please try again')
 
-            # Check bottom roll diameter data entry
+            # Check bottom roll diameter  entry
         if self.check_string_is_float(self.bottom_roll_diameter_textbox.get()):
 
             bottom_roll_diameter = self.convert_to_float(self.bottom_roll_diameter_textbox.get())
