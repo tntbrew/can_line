@@ -27,8 +27,9 @@ class UserManager:
     def create_new_user_form(self):
         self.root = tk.Toplevel(self.master)
         self.root.title('User Editor')
+        self.root.config(bg='#D9D8D7')
 
-        self.root.geometry('815x700')
+        self.root.geometry('390x560')
 
         self.root.update_idletasks()
         width = self.root.winfo_width()
@@ -45,20 +46,20 @@ class UserManager:
         self.root.attributes("-topmost", True)
 
         # create labels for form
-        self.user_name_label = tk.Label(self.root, font=FONT_SIZE, text='User Name:')
-        self.user_name_label.grid(row=0, column=0, padx=10, pady=10)
+        self.user_name_label = tk.Label(self.root, bg='#D9D8D7', font=FONT_SIZE, text='User Name:')
+        self.user_name_label.grid(row=0, column=0, padx=10, pady=10, sticky='e')
 
-        self.user_password_label = tk.Label(self.root, font=FONT_SIZE, text='Password:')
-        self.user_password_label.grid(row=1, column=0, padx=10, pady=10)
+        self.user_password_label = tk.Label(self.root, bg='#D9D8D7',  font=FONT_SIZE, text='Password:')
+        self.user_password_label.grid(row=1, column=0, padx=10, pady=10, sticky='e')
 
-        self.user_confirm_password_label = tk.Label(self.root, font=FONT_SIZE, text='Confirm Password:')
-        self.user_confirm_password_label.grid(row=2, column=0, padx=10, pady=10)
+        self.user_confirm_password_label = tk.Label(self.root, bg='#D9D8D7',  font=FONT_SIZE, text='Confirm Password:')
+        self.user_confirm_password_label.grid(row=2, column=0, padx=10, pady=10, sticky='e')
 
-        self.user_access_label = tk.Label(self.root, font=FONT_SIZE, text='Access:')
-        self.user_access_label.grid(row=3, column=0, pady=10)
+        self.user_access_label = tk.Label(self.root, bg='#D9D8D7',  font=FONT_SIZE, text='Access:')
+        self.user_access_label.grid(row=3, column=0, padx=10, pady=10, sticky='e')
 
-        self.delete_label = tk.Label(self.root, font=FONT_SIZE, text='Record Id:')
-        self.delete_label.grid(row=5, column=0, padx=10)
+        self.delete_label = tk.Label(self.root, bg='#D9D8D7',  font=FONT_SIZE, text='Record Id To Delete:')
+        self.delete_label.grid(row=5, column=0, padx=10, sticky='e')
 
         # create input controls
         self.user_name_textbox = tk.Entry(self.root, font=FONT_SIZE)
@@ -79,7 +80,7 @@ class UserManager:
                                        font=FONT_SIZE)
         self.submit_button.grid(row=4, column=0, columnspan=2, pady=10, padx=10, ipadx=50)
 
-        self.delete_textbox = tk.Entry(self.root, width=10, font=FONT_SIZE)
+        self.delete_textbox = tk.Entry(self.root, font=FONT_SIZE)
         self.delete_textbox.grid(row=5, column=1)
 
         self.delete_button = tk.Button(self.root, text='Delete', font=FONT_SIZE,
@@ -115,33 +116,29 @@ class UserManager:
 
     def display_users_on_form(self):
 
-        self.tree = ttk.Treeview(self.root, column=("c1", "c2", "c3", "C4"), show='headings')
+        self.tree = ttk.Treeview(self.root, column=("c1", "c2", "c3"), show='headings')
         try:
             DbConnection = sqlite3.connect('canlinedb.mdf')
             DbCursor = DbConnection.cursor()
 
-            DbCursor.execute("SELECT *,oid FROM user")
+            DbCursor.execute("SELECT oid,user_name ,user_access FROM user")
 
             records = DbCursor.fetchall()
 
             for record in records:
                 self.tree.insert("", tk.END, values=record)
 
-            self.tree.column("#1", anchor=tk.CENTER)
+            self.tree.column("#1", anchor=tk.CENTER, width=20)
 
-            self.tree.heading("#1", text="NAME")
+            self.tree.heading("#1", text="ID")
 
             self.tree.column("#2", anchor=tk.CENTER)
 
-            self.tree.heading("#2", text="PW")
+            self.tree.heading("#2", text="NAME")
 
-            self.tree.column("#3", anchor=tk.CENTER)
+            self.tree.column("#3", anchor=tk.CENTER, width=100)
 
             self.tree.heading("#3", text="ACCESS")
-
-            self.tree.column("#4", anchor=tk.CENTER)
-
-            self.tree.heading("#4", text="ID")
 
             self.tree.grid(row=7, column=0, columnspan=2, pady=10, padx=10)
 
@@ -222,7 +219,7 @@ class UserManager:
         if len(self.user_name_textbox.get()) < 3:
             messagebox.showerror('User name', 'Name must be at least 3 characters')
 
-            self.user_name_textbox.delete(0, END)
+            self.user_name_textbox.delete(0, tk.END)
             self.user_name_textbox.focus()
             return
 
@@ -230,13 +227,11 @@ class UserManager:
             messagebox.showerror('Invalid Passwords',
                                  'Passwords do not match')
 
-            self.user_password_textbox.delete(0, END)
-            self.user_confirm_password_textbox.delete(0, END)
+            self.user_password_textbox.delete(0, tk.END)
+            self.user_confirm_password_textbox.delete(0, tk.END)
             self.user_password_textbox.focus()
 
             return
         self.save_user_to_database(self.user_name_textbox.get(),
                                    self.user_password_textbox.get(),
                                    self.user_access_combobox.get())
-
-
