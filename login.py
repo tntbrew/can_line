@@ -11,8 +11,15 @@ from usermanager import UserManager
 import bcrypt
 
 
+def close_window(root, main):
+    root.withdraw()
+    main.focus_force()
+
+
 class Login:
     def __init__(self, master):
+        self.user_password_textbox = None
+        self.username_combo = None
         self.master = master
         self.root = tk.Toplevel(self.master)
 
@@ -23,7 +30,7 @@ class Login:
     def validate_login(self, root):
 
         username = self.username_combo.get()
-        temp_password = self.userpassword_textbox.get()
+        temp_password = self.user_password_textbox.get()
 
         # Hash the encoded password and generate a salt:
         temp_password = temp_password.encode('utf-8')
@@ -37,25 +44,25 @@ class Login:
 
         DbConnection.close()
 
-        for userlogin in user_record:
+        for user_login in user_record:
 
-            if bcrypt.checkpw(temp_password, userlogin[1]):
+            if bcrypt.checkpw(temp_password, user_login[1]):
 
                 # admin
-                if userlogin[2] == USER_ACCESS_CODES[2]:
+                if user_login[2] == USER_ACCESS_CODES[2]:
                     AdminMenu(self.master, logged_on_user_name).create_admin_menu()
 
-                    self.close_window(root, self.master)
+                    close_window(root, self.master)
                     return True
 
                 # can maker
-                if userlogin[2] == USER_ACCESS_CODES[1]:
+                if user_login[2] == USER_ACCESS_CODES[1]:
                     CanMakerMenu(self.master).create_can_maker_menu()
-                    self.close_window()
+                    close_window(root, self.master)
                     return True
 
                 # operator
-                if userlogin[2] == USER_ACCESS_CODES[0]:
+                if user_login[2] == USER_ACCESS_CODES[0]:
                     OperatorMenu(self.master).create_operator_menu()
                     self.root.destroy()
                     # self.close_window()
@@ -65,12 +72,8 @@ class Login:
 
             else:
                 messagebox.showerror('Error', 'login failed.Try again', parent=self.root)
-                self.userpassword_textbox.delete(0, tk.END)
+                self.user_password_textbox.delete(0, tk.END)
                 return
-
-    def close_window(self, root, main):
-        root.withdraw()
-        main.focus_force()
 
     def create_login_window(self):
 
@@ -90,37 +93,34 @@ class Login:
         self.root.geometry('{}x{}+{}+{}'.format(width, height, x, y))
         self.root.deiconify()
 
-        usersname_list = list()
-        usernames = list()
+        users_name_list = list()
 
-        # get user names from database table
+        # get usernames from database table
         usernames = UserManager(self.master).get_user_names()
-        # UserManager.destroy()
 
-        # loop thru user names and append them to the users_names list
-
+        # loop through usernames and append them to the users_names list
         for user in usernames:
-            usersname_list.append(user[0])
+            users_name_list.append(user[0])
 
         # create labels for form
         username_label = tk.Label(self.root, text='User Name:', bg='#D9D8D7', font=FONT_SIZE)  # bg='grey',
         username_label.grid(row=0, column=0, padx=10, pady=10)
 
-        userpassword_label = tk.Label(self.root, text='Password:', bg='#D9D8D7', font=FONT_SIZE)  # ,bg='grey')
-        userpassword_label.grid(row=1, column=0, padx=10, pady=10)
+        user_password_label = tk.Label(self.root, text='Password:', bg='#D9D8D7', font=FONT_SIZE)  # ,bg='grey')
+        user_password_label.grid(row=1, column=0, padx=10, pady=10)
 
-        # create textboxes for form
+        # create text boxes for form
         self.username_combo = ttk.Combobox(self.root, width=18, font=FONT_SIZE)
-        self.username_combo['values'] = usersname_list
+        self.username_combo['values'] = users_name_list
         self.username_combo.current(0)
         self.username_combo.grid(row=0, column=1)
 
-        self.userpassword_textbox = tk.Entry(self.root, show='*', font=FONT_SIZE)
-        self.userpassword_textbox.grid(row=1, column=1)
+        self.user_password_textbox = tk.Entry(self.root, show='*', font=FONT_SIZE)
+        self.user_password_textbox.grid(row=1, column=1)
 
         # create log on button
         submit_button = tk.Button(self.root, text="Login", font=FONT_SIZE,
                                   command=lambda: self.validate_login(self.root))
         submit_button.grid(row=2, column=0, columnspan=2, pady=10, padx=20, ipadx=60)
         self.root.bind('<Return>', lambda event: self.validate_login(self.root))
-        self.userpassword_textbox.focus()
+        self.user_password_textbox.focus()
