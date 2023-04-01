@@ -50,7 +50,7 @@ class Login:
 
                 # can maker
                 if userlogin[2] == USER_ACCESS_CODES[1]:
-                    CanMakerMenu(self.master).create_canmaker_menu()
+                    CanMakerMenu(self.master).create_can_maker_menu()
                     self.close_window()
                     return True
 

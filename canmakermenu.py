@@ -5,7 +5,7 @@ class CanMakerMenu:
     def __init__(self, master):
         self.master = master
 
-    def create_canmaker_menu(self):
+    def create_can_maker_menu(self):
         menubar = tk.Menu(self.master, background='#ff8000', foreground='black', activebackground='white',
                           activeforeground='black')
 
