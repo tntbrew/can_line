@@ -123,3 +123,4 @@ class Login:
                                   command=lambda: self.validate_login(self.root))
         submit_button.grid(row=2, column=0, columnspan=2, pady=10, padx=20, ipadx=60)
         self.root.bind('<Return>', lambda event: self.validate_login(self.root))
+        self.userpassword_textbox.focus()
